@@ -5,12 +5,14 @@ namespace backend\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Books;
+use common\models\Authors;
 
 /**
  * BooksSearch represents the model behind the search form of `common\models\Books`.
  */
 class BooksSearch extends Books
 {
+    public $authorName;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +20,7 @@ class BooksSearch extends Books
     {
         return [
             [['id', 'id_authors'], 'integer'],
-            [['title', 'genre'], 'safe'],
+            [['title', 'genre', 'authorName'], 'safe'],
         ];
     }
 
@@ -41,12 +43,16 @@ class BooksSearch extends Books
     public function search($params)
     {
         $query = Books::find();
-
+        $query->joinWith(['authors']);
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        $dataProvider->sort->attributes['authorName'] = [
+            'asc' => [Authors::tableName() . '.name' => SORT_ASC],
+            'desc' => [Authors::tableName() . '.name' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -63,7 +69,8 @@ class BooksSearch extends Books
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'genre', $this->genre]);
+            ->andFilterWhere(['like', 'genre', $this->genre])
+            ->andFilterWhere(['like', Authors::tableName() . '.name', $this->authorName]);
 
         return $dataProvider;
     }

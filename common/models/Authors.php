@@ -53,4 +53,9 @@ class Authors extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Books::className(), ['id_authors' => 'id']);
     }
+    public function setCountBooks()
+    {
+        $this->countBooks = count($this->books);
+        return $this->countBooks;
+    }
 }
