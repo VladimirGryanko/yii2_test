@@ -19,6 +19,6 @@ $this->title = 'My Yii Application';
                     'genre',
                 ],
             ]); ?>
-        </div>
+        </div>`
     </div>
 </div>

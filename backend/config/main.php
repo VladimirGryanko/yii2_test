@@ -10,10 +10,15 @@ return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => ['log'],
-    'modules' => [],
+    'bootstrap' => ['log', 'api'],
+    'modules' => [
+        'api' => [
+            'class' => backend\modules\api\Module::className(),
+        ],
+    ],
     'components' => [
         'request' => [
+            'parsers' => ['application/json' => 'yii\web\JsonParser',],
             'csrfParam' => '_csrf-backend',
         ],
         'user' => [
@@ -37,13 +42,15 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-
         'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => false,
             'showScriptName' => false,
-            'rules' => [],
-        ],
+            'rules' => [
+                ['pattern' => '/', 'route' => 'site/index'],
 
+            ],
+        ],
     ],
     'params' => $params,
 ];
